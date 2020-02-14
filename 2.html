@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <style>
+        table, tr, td, th {
+            border: 1px orangered solid;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>Madding</h1>
+        <div id="loginInput">
+            <p><input type="text" id="userName" placeholder="Username"></p>
+            <p><input type="password" name="" id="password" placeholder="Password"></p>
+            <p><input type="button" value="Login" onclick="login()"></p>
+        </div>
+        
+        <div id="page">
+            
+        </div>
+    </center>
+
+<script>let users = [
+    {id: 'admin', password: 'admin'},
+    {id: 'user', password: 'user'}
+]
+var olahRaga = [
+    {number: 1, jenis: 'Lari', hari: 'Senin'},
+    {number: 2, jenis: 'Estafet', hari: 'Selasa'}
+]
+
+const listNama = (indexYangDihapus) => {
+    let list = olahRaga.map((elem,i) => {
+        // console.log(indexYangDihapus)
+        // console.log(i)
+        // console.log("#####")
+        if(indexYangDihapus === i){
+            return(
+            `
+                <tr>
+                    <td><input type="text" value="${elem.jenis}" id="jenisBaru"></td>
+                    <td><input type="text" value="${elem.hari}" id="hariBaru"></td>
+                    <td></td>
+                    <td><input type="button" value="Save" onclick="saveData(${i})"></td>
+                    <td><input type="button" value="Cancel" onclick="listNama()"></td>
+                </tr> 
+            `
+            )
+        }
+        return(
+            `
+                <tr>
+                    <td>${elem.jenis}</td>
+                    <td>${elem.hari}</td>
+                    <td></td>
+                    <td><input type="button" value="Delete" onclick="hapusData(${i})"></td>
+                    <td><input type="button" value="Edit" onclick="listNama(${i})"></td>
+                </tr> 
+            `
+        )
+    })
+    document.getElementById("listNama").innerHTML = list.join('')
+}
+
+const hapusData = (index) => {
+olahRaga.splice(index,1)
+listNama()
+}
+
+const saveData = (index) => {
+let jenisBaru = document.getElementById('jenisBaru').value
+let hariBaru = document.getElementById('hariBaru').value
+// bioData[index].namaDepan = depanBaru
+// bioData[index].namaBelakang = belakangBaru
+
+olahRaga[index] = {
+    jenis : jenisBaru,
+    hari : hariBaru
+}
+listNama()
+}
+
+
+const findUser = () => {
+    var existId = users.find((val) => {
+        return val.id === document.querySelector('#userName').value
+    })
+    if(existId){
+        return existId.id
+    }else{
+        return false
+    }
+}
+
+const findPassword = () => {
+    var existPassword = users.find((val) => {
+        return val.password === document.querySelector('#password').value
+    })
+    if(existPassword){
+        return existPassword.password
+    }else{
+        return false
+    }
+
+}
+
+function logout(){
+    document.querySelector('#page').innerHTML = ''
+    document.querySelector('#loginInput').innerHTML = `
+    <Center>
+    <p><input type="text" id="userName" placeholder="Username"></P>
+    <p><input type="password" name="" id="password" placeholder="Password"></P>
+    <p><input type="button" value="Login" onclick="login()"></P>
+    </center>
+    `
+}
+
+function login(){ 
+    if(document.querySelector('#userName').value === users[0].id && document.querySelector('#password').value === users[0].password){
+        document.querySelector('#loginInput').innerHTML = ''
+        const adminHtml = () => {
+            document.querySelector('#page').innerHTML = `
+            <h2>ADMIN PAGE</h2>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kegiatan</th>
+                        <th>Hari</th>
+                        <th>Poster</th>
+                        <th colspan="3">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="listNama">
+                </tbody>
+            </table>
+        
+            <input type="button" value="Log Out" onclick="logout()">
+
+            `
+        }
+        adminHtml()
+        listNama()
+        dataLolos()
+    }else if(document.querySelector('#userName').value === findUser() && document.querySelector('#password').value === findPassword()){
+        let namaUser = document.querySelector('#userName').value
+        document.querySelector('#loginInput').innerHTML = ''
+        const userHtml = () => {
+            document.querySelector('#page').innerHTML = `
+            <h2>Welcome, ${namaUser}.</h2>
+            <br>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                    <th>Kegiatan</th>
+                    <th>Hari</th>
+                    <th>Poster</th>
+                    </tr>
+                </thead>
+                <tbody id="listNama">
+                </tbody>
+            </table>
+            <input type="button" value="Log Out" onclick="logout()">
+            `
+        }
+        userHtml()
+
+        const listNama = (i) => {
+            let list = olahRaga.map((elem) => {
+                return(
+                    `
+                        <tr>
+                            <td>${elem.jenis}</td>
+                            <td>${elem.hari}</td>
+                        </tr> 
+                    `
+                )
+            })
+            document.getElementById("listNama").innerHTML = list.join('')
+            }
+        listNama()
+    }else{
+        document.querySelector('#page').innerHTML = `<h2>Username/Password anda salah.</h2>`
+    }
+
+}</script>
+</body>
+</html>
